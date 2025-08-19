@@ -203,52 +203,54 @@
             });
 
             $('#login-form').submit(function(e) {
-                e.preventDefault();
-                start_loader();
-                $('.err-msg').remove();
-                $.ajax({
-                    url: _base_url_ + "classes/Login.php?f=login_user",
-                    method: "POST",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    error: err => {
-                        console.log(err);
-                        alert_toast("An error occurred", 'error');
-                        end_loader();
-                    },
-                    success: function(resp) {
-                        end_loader();
-                        if (typeof resp === 'object' && resp.status === 'success') {
-                            if (resp.preferences_set) {
-                                window.location.href = _base_url_ + resp.redirect;
-                            } else {
-                                Swal.fire({
-                                    title: 'Login Successful!',
-                                    text: "Set your preferences to get better recommendations.",
-                                    icon: 'success',
-                                    showCancelButton: true,
-                                    confirmButtonText: 'Set Preferences',
-                                    cancelButtonText: 'Skip for Now',
-                                    reverseButtons: true
-                                }).then((result) => {
-                                    if (result.isConfirmed) {
-                                        window.location.href = _base_url_ + "/?page=edit_account";
-                                    } else {
-                                        window.location.href = _base_url_ + "index.php";
-                                    }
-                                });
-                            }
-                        } else if (resp.status === 'incorrect') {
-                            $('<div>').addClass("alert alert-danger err-msg").text("Incorrect Credentials.").prependTo('#login-form');
-                            end_loader();
+    e.preventDefault();
+    start_loader();
+    $('.err-msg').remove();
+    $.ajax({
+        url: _base_url_ + "classes/Login.php?f=login_user",
+        method: "POST",
+        data: $(this).serialize(),
+        dataType: "json",
+        error: err => {
+            console.log(err);
+            alert_toast("An error occurred", 'error');
+            end_loader();
+        },
+        success: function(resp) {
+            end_loader();
+            if (typeof resp === 'object' && resp.status === 'success') {
+                if (resp.preferences_set) {
+                    // Preferences are set (preference is not NULL), redirect directly
+                    window.location.href = _base_url_ + resp.redirect;
+                } else {
+                    // Preferences are not set (preference is NULL), show Swal prompt
+                    Swal.fire({
+                        title: 'Login Successful!',
+                        text: "Set your preferences to get better recommendations.",
+                        icon: 'success',
+                        showCancelButton: true,
+                        confirmButtonText: 'Set Preferences',
+                        cancelButtonText: 'Skip for Now',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = _base_url_ + "/?page=edit_account";
                         } else {
-                            console.log(resp);
-                            alert_toast("An error occurred", 'error');
-                            end_loader();
+                            window.location.href = _base_url_ + "index.php";
                         }
-                    }
-                });
-            });
+                    });
+                }
+            } else if (resp.status === 'incorrect') {
+                $('<div>').addClass("alert alert-danger err-msg").text("Incorrect Credentials.").prependTo('#login-form');
+                end_loader();
+            } else {
+                console.log(resp);
+                alert_toast("An error occurred", 'error');
+                end_loader();
+            }
+        }
+    });
+});
 
             // Navbar shrink on scroll
             $(window).scroll(function() {

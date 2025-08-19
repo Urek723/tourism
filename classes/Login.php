@@ -10,7 +10,7 @@ class Login extends DBConnection {
         parent::__construct();
         ini_set('display_errors', 1);
         ini_set('log_errors', 1);
-        ini_set('error_log', 'C:/xampp/htdocs/tourism/logs/error.log'); // Adjusted for XAMPP
+        ini_set('error_log', 'C:/xampp/htdocs/tourism/logs/error.log');
         error_reporting(E_ALL);
     }
 
@@ -49,7 +49,7 @@ class Login extends DBConnection {
 
     public function login_user() {
         extract($_POST);
-        $qry = "SELECT *, preferences_set FROM users WHERE username = ? AND password = md5(?) AND type = 0";
+        $qry = "SELECT *, preference FROM users WHERE username = ? AND password = md5(?) AND type = 0";
         $stmt = $this->conn->prepare($qry);
         if (!$stmt) {
             return json_encode(array('status' => 'failed', 'message' => 'Query preparation failed: ' . $this->conn->error));
@@ -65,7 +65,8 @@ class Login extends DBConnection {
             $user = $result->fetch_array();
             $resp['status'] = 'success';
             $resp['redirect'] = '/index.php';
-            $resp['preferences_set'] = $user['preferences_set'] == 1 ? true : false;
+            // Check if preference is NULL to determine if preferences are set
+            $resp['preferences_set'] = is_null($user['preference']) ? false : true;
 
             foreach ($user as $k => $v) {
                 if (!is_numeric($k) && $k != 'password') {

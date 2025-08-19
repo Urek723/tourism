@@ -243,74 +243,72 @@ class Master extends DBConnection
 
 
 	function update_account()
-	{
-		extract($_POST);
-		$resp = [];
+{
+    extract($_POST);
+    $resp = [];
 
-		$check = $this->conn->query("SELECT * FROM `users` WHERE `username` = '{$username}' AND `id` != {$id}")->num_rows;
-		if ($check > 0) {
-			$resp['status'] = 'failed';
-			$resp['msg'] = "Username already taken.";
-			return json_encode($resp);
-		}
+    $check = $this->conn->query("SELECT * FROM `users` WHERE `username` = '{$username}' AND `id` != {$id}")->num_rows;
+    if ($check > 0) {
+        $resp['status'] = 'failed';
+        $resp['msg'] = "Username already taken.";
+        return json_encode($resp);
+    }
 
+    if (!empty($password)) {
+        $stmt = $this->conn->prepare("SELECT `password` FROM `users` WHERE `id` = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stored_password = $result->fetch_assoc()['password'];
+        $stmt->close();
 
-		if (!empty($password)) {
+        if (md5($cpassword) !== $stored_password) {
+            $resp['status'] = 'failed';
+            $resp['msg'] = "Current Password is Incorrect";
+            return json_encode($resp);
+        }
 
-			$stmt = $this->conn->prepare("SELECT `password` FROM `users` WHERE `id` = ?");
-			$stmt->bind_param("i", $id);
-			$stmt->execute();
-			$result = $stmt->get_result();
-			$stored_password = $result->fetch_assoc()['password'];
-			$stmt->close();
+        $_POST['password'] = md5($password);
+    }
 
+    // Handle preferences: set to NULL if no preferences are selected
+    if (isset($_POST['preference']) && is_array($_POST['preference']) && !empty($_POST['preference'])) {
+        $_POST['preference'] = implode(',', $_POST['preference']);
+    } else {
+        $_POST['preference'] = NULL; // Set to NULL if no preferences are selected
+    }
 
-			if (md5($cpassword) !== $stored_password) {
-				$resp['status'] = 'failed';
-				$resp['msg'] = "Current Password is Incorrect";
-				return json_encode($resp);
-			}
+    $data = "";
+    foreach ($_POST as $k => $v) {
+        if ($k == 'cpassword' || ($k == 'password' && empty($v))) {
+            continue;
+        }
+        if (!empty($data)) {
+            $data .= ", ";
+        }
+        if ($k == 'preference' && is_null($v)) {
+            $data .= " `{$k}`=NULL ";
+        } else {
+            $v = $this->conn->real_escape_string($v);
+            $data .= " `{$k}`='{$v}' ";
+        }
+    }
 
-			$_POST['password'] = md5($password);
-		}
+    $save = $this->conn->query("UPDATE `users` SET $data WHERE id = {$id}");
+    if ($save) {
+        foreach ($_POST as $k => $v) {
+            if ($k != 'cpassword') {
+                $this->settings->set_userdata($k, $v);
+            }
+        }
+        $resp['status'] = 'success';
+    } else {
+        $resp['status'] = 'failed';
+        $resp['error'] = $this->conn->error;
+    }
 
-
-		if (isset($_POST['preference']) && is_array($_POST['preference'])) {
-			$_POST['preference'] = implode(',', $_POST['preference']);
-		} else {
-			$_POST['preference'] = '';
-		}
-
-
-		$data = "";
-		foreach ($_POST as $k => $v) {
-			if ($k == 'cpassword' || ($k == 'password' && empty($v))) {
-				continue;
-			}
-			if (!empty($data)) {
-				$data .= ", ";
-			}
-			$v = $this->conn->real_escape_string($v);
-			$data .= " `{$k}`='{$v}' ";
-		}
-
-
-		$save = $this->conn->query("UPDATE `users` SET $data WHERE id = {$id}");
-		if ($save) {
-
-			foreach ($_POST as $k => $v) {
-				if ($k != 'cpassword') {
-					$this->settings->set_userdata($k, $v);
-				}
-			}
-			$resp['status'] = 'success';
-		} else {
-			$resp['status'] = 'failed';
-			$resp['error'] = $this->conn->error;
-		}
-
-		return json_encode($resp);
-	}
+    return json_encode($resp);
+}
 
 
 
