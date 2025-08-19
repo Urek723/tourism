@@ -1,0 +1,13 @@
+Array
+(
+    [video] => Array
+        (
+            [name] => 123123123123aaaaa.mp4
+            [full_path] => 123123123123aaaaa.mp4
+            [type] => video/mp4
+            [tmp_name] => /Applications/XAMPP/xamppfiles/temp/phpFZmW3r
+            [error] => 0
+            [size] => 5440576
+        )
+
+)
