@@ -45,12 +45,33 @@
             max-height: 80vh;
         }
 
-        #tourCarousel .carousel-item {
-            transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+#tourCarousel .carousel-inner {
+    position: relative;
+    overflow: hidden;
+}
 
-            background-color: black;
+#tourCarousel .carousel-item {
+    transition: opacity 0.4s ease-in-out;
+    background-color: black;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
 
-        }
+#tourCarousel .carousel-item.active {
+    opacity: 1;
+    position: relative;
+}
+
+#tourCarousel .carousel-item img {
+    object-fit: cover;
+    max-height: 600px;
+    width: 100%;
+    height: 100%;
+}
         .nav-tabs .nav-link {
     background: #f5f5f5;
     color: #222 !important;
