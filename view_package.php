@@ -264,6 +264,11 @@
             Events & Festivals
         </button>
     </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link px-4 py-3" id="estimate-tab" data-bs-toggle="tab" data-bs-target="#estimate" type="button" role="tab" aria-controls="estimate" aria-selected="false">
+           Travel Estimate
+        </button>
+    </li>
                 </ul>
             </div>
             <div class="card-body p-4">
@@ -329,6 +334,13 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Estimate Tab -->
+                     <div class="tab-pane fade" id="estimate" role="tabpanel" aria-labelledby="estimate-tab">
+        <div class="travel-estimate">
+            <h5 class="mb-3">Travel Estimate</h5>
+           
+        </div>
+    </div>               
                     <!-- Events & Festivals Tab -->
     <div class="tab-pane fade" id="events" role="tabpanel" aria-labelledby="events-tab">
         <div class="events-calendar">

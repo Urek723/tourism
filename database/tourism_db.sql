@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 19, 2025 at 07:52 AM
+-- Generation Time: Aug 22, 2025 at 02:45 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -303,7 +303,8 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `password`, `ava
 (19, '123', '123', '123', '81dc9bdb52d04dc20036dbd8313ed055', NULL, NULL, 0, '2025-05-08 20:15:37', '2025-05-08 20:18:52', '', 0),
 (20, '111', '111', '111', '698d51a19d8a121ce581499d7b701668', NULL, NULL, 0, '2025-05-08 21:00:33', '2025-05-08 21:28:57', 'hiking', 0),
 (21, 'rey', 'nedruda', 'nedruda102', '596a96cc7bf9108cd896f33c44aedc8a', NULL, NULL, 1, '2025-08-19 10:52:02', '2025-08-19 11:04:41', NULL, 0),
-(22, 'kobr', 'kgsd', 'kobe', '202cb962ac59075b964b07152d234b70', NULL, NULL, 0, '2025-08-19 12:02:52', '2025-08-19 13:03:22', 'cultural', 0);
+(22, 'kobr', 'kgsd', 'kobe', '202cb962ac59075b964b07152d234b70', NULL, NULL, 0, '2025-08-19 12:02:52', '2025-08-22 08:30:54', 'cultural,hiking,nature', 0),
+(23, 'rey', 'rey', 'nedruda10', '596a96cc7bf9108cd896f33c44aedc8a', NULL, NULL, 0, '2025-08-19 14:10:41', '2025-08-19 14:32:13', '', 0);
 
 -- --------------------------------------------------------
 
@@ -312,8 +313,20 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `password`, `ava
 --
 DROP TABLE IF EXISTS `packages`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `packages`  AS SELECT `location`.`id` AS `id`, `location`.`title` AS `title`, `location`.`tour_location` AS `tour_location`, `location`.`cost` AS `cost`, `location`.`description` AS `description`, `location`.`upload_path` AS `upload_path`, `location`.`status` AS `status`, `location`.`date_created` AS `date_created`, `location`.`opening_hours` AS `opening_hours`, `location`.`upload_path_video` AS `upload_path_video`, `location`.`category` AS `category` FROM `location``location`  ;
-
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `packages` AS 
+SELECT 
+    `location`.`id` AS `id`, 
+    `location`.`title` AS `title`, 
+    `location`.`tour_location` AS `tour_location`, 
+    `location`.`cost` AS `cost`, 
+    `location`.`description` AS `description`, 
+    `location`.`upload_path` AS `upload_path`, 
+    `location`.`status` AS `status`, 
+    `location`.`date_created` AS `date_created`, 
+    `location`.`opening_hours` AS `opening_hours`, 
+    `location`.`upload_path_video` AS `upload_path_video`, 
+    `location`.`category` AS `category` 
+FROM `location`;
 --
 -- Indexes for dumped tables
 --
@@ -416,7 +429,7 @@ ALTER TABLE `system_info`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

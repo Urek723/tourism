@@ -285,7 +285,7 @@ function sendChatbotMessage() {
     messages.innerHTML += '<div><b>You:</b> ' + msg + '</div>';
     input.value = '';
     messages.scrollTop = messages.scrollHeight;
-    // Dummy bot reply
+   
     setTimeout(function() {
         messages.innerHTML += '<div><b>Bot:</b> Sorry, I am just a demo!</div>';
         messages.scrollTop = messages.scrollHeight;
